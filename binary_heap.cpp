@@ -23,3 +23,7 @@ int BinaryHeap::deleteMin() {
     cout << "Binary delete" << endl;
     return 0;
 }
+
+void BinaryHeap::getMin() {
+    cout << "Binary get" << endl;
+}

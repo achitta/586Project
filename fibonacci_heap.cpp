@@ -23,3 +23,7 @@ int FibonacciHeap::deleteMin() {
     cout << "Fibonacci delete" << endl;
     return 0;
 }
+
+void FibonacciHeap::getMin() {
+    cout << "Fibonacci get" << endl;
+}

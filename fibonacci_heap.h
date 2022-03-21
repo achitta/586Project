@@ -10,6 +10,7 @@ public:
     void insert(int key, int value);
     int deleteMin();
     void decreaseKey(int key, int newValue);
+    void getMin();
 };
 
 #endif

@@ -23,3 +23,7 @@ int BinomialHeap::deleteMin() {
     cout << "Binomial delete" << endl;
     return 0;
 }
+
+void BinomialHeap::getMin() {
+    cout << "Binomial get" << endl;
+}
