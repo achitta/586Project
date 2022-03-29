@@ -40,6 +40,9 @@ class EsTree:
         self.computeLevels()
         self.selectParent()
 
+    def deleteEdge(self, src, dst):
+        pass
+
     def computeLevels(self):
         """Computes and sets level for each node."""
         queue = deque()
