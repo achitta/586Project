@@ -43,6 +43,7 @@ class EsTree:
         self.selectParent()
 
     def deleteEdge(self, src, dst):
+        """Remove edge from graph and update data structures accordingly."""
         # Remove edge in adjacency matrix
         self.adjacencyMatrix[src].remove(dst)
 
@@ -57,6 +58,7 @@ class EsTree:
         self.updateLevel(dstNode)
 
     def updateLevel(self, currNode: Node):
+        """Update parent and level of node accordingly."""
         # Get the parent node
         parentNode = None
         if currNode.parent != -1:
@@ -87,6 +89,8 @@ class EsTree:
 
     def findNextParent(self, currNode: Node):
         """Sets id of parent or -1 if no parent can be found."""
+        toRemove = []
+        parentFound = False
         for n_id in currNode.unchecked:
             neighbor = self.idToNode[n_id]
             # If this neighbor has a level that is >= current level
@@ -94,14 +98,19 @@ class EsTree:
             # parent currently
             #
             # Else, make the node a parent of the current node
+            toRemove.append(n_id)
             if neighbor.level >= currNode.level:
-                currNode.unchecked.remove(n_id)
                 currNode.nonNeighbors.add(n_id)
             else:
-                currNode.unchecked.remove(n_id)
                 currNode.parent = n_id
-                return
-        currNode.parent = -1
+                parentFound = True
+                break
+        
+        if not parentFound:
+            currNode.parent = -1
+        
+        for n_id in toRemove:
+            currNode.unchecked.remove(n_id)
 
     def computeLevels(self):
         """Computes and sets level for each node."""
@@ -124,4 +133,6 @@ class EsTree:
             if node.unchecked:
                 # Move an incoming node as parent
                 node.parent = node.unchecked.pop()
-            
+    
+    def distanceFromSource(self, node_id):
+        return self.idToNode[node_id].level
