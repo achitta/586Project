@@ -1,1 +1,1 @@
-Compile with `g++ *.cpp -o driver` and run with `./driver`
+Run with `python3 driver.py`
