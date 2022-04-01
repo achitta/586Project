@@ -8,8 +8,6 @@ class KosarajuGraph:
         self.numVertices = numVertices
         self.graph = defaultdict(list)
         self.init_graph(edges)
-        # self.current = []
-        # self.SCCs = []
 
     def init_graph(self, edges):
         for src, dst in edges:
@@ -25,7 +23,6 @@ class KosarajuGraph:
 
         current.add(d)
 
-        print(d, end=' ')
         for i in self.graph[d]:
             if not visited_vertex[i]:
                 self.dfs(i, visited_vertex)
@@ -66,13 +63,4 @@ class KosarajuGraph:
                 gr.dfs(i, visited_vertex)
                 SCCs.append(current.copy())
                 current.clear()
-                # print(current)
-                print("")
         return SCCs
-
-
-# g = KosarajuGraph(8, [(0,1),(1,2),(2,3),(2,4),(3,0),(4,5), (5,6), (6,4), (6,7)])
-
-# print("Strongly Connected Components:")
-# g.print_scc()
-# print(SCCs)
