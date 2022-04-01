@@ -1,8 +1,5 @@
 from collections import defaultdict
 
-current = set()
-SCCs = []
-
 class KosarajuGraph:
     def __init__(self, numVertices, edges):
         self.numVertices = numVertices
@@ -18,14 +15,14 @@ class KosarajuGraph:
         self.graph[s].append(d)
 
     # dfs
-    def dfs(self, d, visited_vertex):
+    def dfs(self, d, visited_vertex, current):
         visited_vertex[d] = True
 
         current.add(d)
 
         for i in self.graph[d]:
             if not visited_vertex[i]:
-                self.dfs(i, visited_vertex)
+                self.dfs(i, visited_vertex, current)
 
     def fill_order(self, d, visited_vertex, stack):
         visited_vertex[d] = True
@@ -44,7 +41,7 @@ class KosarajuGraph:
 
         return g
 
-    # Print stongly connected components
+    # Return stongly connected components
     def get_scc(self):
         stack = []
         visited_vertex = [False] * (self.numVertices)
@@ -56,11 +53,23 @@ class KosarajuGraph:
         gr = self.transpose()
 
         visited_vertex = [False] * (self.numVertices)
-
+        SCCs = []
         while stack:
             i = stack.pop()
             if not visited_vertex[i]:
-                gr.dfs(i, visited_vertex)
-                SCCs.append(current.copy())
-                current.clear()
-        return SCCs
+                current = set()
+                gr.dfs(i, visited_vertex, current)
+                SCCs.append(current)
+
+        all_edges = []
+        for scc in SCCs:
+            edges = []
+            for node in scc:
+                outgoing = self.graph[node]
+                for dst in outgoing:
+                    if dst in scc:
+                        # Reverse order because self.graph has reversed edges
+                        edges.append((dst, node,)) 
+            all_edges.append(edges)
+
+        return SCCs, all_edges

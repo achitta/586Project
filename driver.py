@@ -41,8 +41,9 @@ def main():
     print(e.distanceFromSource(4))
     print(e.distanceFromSource(5))
     g = KosarajuGraph(8, [(0,1),(1,2),(2,3),(2,4),(3,0),(4,5), (5,6), (6,4), (6,7)])
-    sccs = g.get_scc()
+    sccs, subgraphs = g.get_scc()
     print(sccs)
+    print(subgraphs)
     
 
 if __name__ == "__main__":
