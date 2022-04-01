@@ -1,4 +1,4 @@
-from collections import deque
+from collections import deque, defaultdict
 import math
 
 class Node:
@@ -22,17 +22,16 @@ class Node:
 class EsTree:
     def __init__(self, numVertices, edges, srcNode):
         """Initialize ES Tree."""
-        self.adjacencyMatrix = {} # Map from node id to set of neighbor ids
+        self.adjacencyMatrix = defaultdict(set) # Map from node id to set of neighbor ids
         self.idToNode = {} # Map from node id to node object
         self.srcNode = srcNode # Source node id
         self.numVertices = numVertices
         
+        # Create N nodes
         for i in range(numVertices):
-            self.adjacencyMatrix[i] = set()
-            
-            # Create node
             self.idToNode[i] = Node(i)
         
+        # Initialize graph
         for src, dst in edges:
             self.adjacencyMatrix[src].add(dst)
 
