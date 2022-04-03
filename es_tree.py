@@ -3,8 +3,10 @@ import math
 
 class Node:
     def __init__(self, id):
-        # Integers
+        # String/Integer
         self.id = id
+
+        # Integers
         self.level = -1
         self.parent = -1
 
@@ -20,16 +22,17 @@ class Node:
         return self.__str__()
     
 class EsTree:
-    def __init__(self, numVertices, edges, srcNode):
+    def __init__(self, vertices, edges, srcNode):
         """Initialize ES Tree."""
+        # self.vertices = vertices
         self.adjacencyMatrix = defaultdict(set) # Map from node id to set of neighbor ids
         self.idToNode = {} # Map from node id to node object
         self.srcNode = srcNode # Source node id
-        self.numVertices = numVertices
+        self.numVertices = len(vertices)
         
         # Create N nodes
-        for i in range(numVertices):
-            self.idToNode[i] = Node(i)
+        for n_id in vertices:
+            self.idToNode[n_id] = Node(n_id)
         
         # Initialize graph
         for src, dst in edges:

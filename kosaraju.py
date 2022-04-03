@@ -1,8 +1,9 @@
 from collections import defaultdict
 
 class KosarajuGraph:
-    def __init__(self, numVertices, edges):
-        self.numVertices = numVertices
+    def __init__(self, vertices, edges):
+        self.vertices = vertices
+        self.numVertices = len(vertices)
         self.graph = defaultdict(list)
         self.init_graph(edges)
 
@@ -37,7 +38,7 @@ class KosarajuGraph:
         for i in self.graph:
             for j in self.graph[i]:
                 edges.append((j, i,))
-        g = KosarajuGraph(self.numVertices, edges)
+        g = KosarajuGraph(self.vertices, edges)
 
         return g
 
@@ -69,7 +70,7 @@ class KosarajuGraph:
                 for dst in outgoing:
                     if dst in scc:
                         # Reverse order because self.graph has reversed edges
-                        edges.append((dst, node,)) 
+                        edges.append((node, dst,)) 
             all_edges.append(edges)
 
         return SCCs, all_edges
