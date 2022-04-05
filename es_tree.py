@@ -43,9 +43,12 @@ class EsTree:
 
         self.computeLevels()
         self.selectParent()
+        self.idToNode[srcNode].parent = srcNode
 
     def deleteEdge(self, src, dst):
         """Remove edge from graph and update data structures accordingly."""
+        # breakpoint()
+        assert src in self.adjacencyMatrix and dst in self.adjacencyMatrix[src]
         # Remove edge in adjacency matrix
         self.adjacencyMatrix[src].remove(dst)
 
@@ -62,12 +65,13 @@ class EsTree:
     def updateLevel(self, currNode: Node):
         """Update parent and level of node accordingly."""
         # Get the parent node
+        # breakpoint()
         parentNode = None
         if currNode.parent != -1:
             parentNode = self.idToNode[currNode.parent]
         
         # If currNode has lost its parent, need to update
-        if currNode.parent == -1 or parentNode.level >= currNode.level:
+        if (currNode.parent == -1 or parentNode.level >= currNode.level) and currNode.id != self.srcNode:
             self.findNextParent(currNode)
             # If no parent can be found
             if currNode.parent == -1:
@@ -87,7 +91,8 @@ class EsTree:
                 
                 for n_id in self.adjacencyMatrix[currNode.id]:
                     neighbor = self.idToNode[n_id]
-                    self.updateLevel(neighbor)       
+                    if neighbor.level != math.inf:
+                        self.updateLevel(neighbor)       
 
     def findNextParent(self, currNode: Node):
         """Sets id of parent or -1 if no parent can be found."""
@@ -137,4 +142,6 @@ class EsTree:
                 node.parent = node.unchecked.pop()
     
     def distanceFromSource(self, node_id):
+        if node_id == self.srcNode:
+            return 0
         return self.idToNode[node_id].level
