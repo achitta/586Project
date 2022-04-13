@@ -55,9 +55,8 @@ def main():
         l_scc = list(scc)
         print(l_scc)
         print(l_scc[0])
-        s = SCC(l_scc, subgraph, l_scc[0])
-        break
-    s.deleteEdge(1,2)
+        # s = SCC(l_scc, subgraph, l_scc[0])
+        # break
     # print(sccs)
     # print(subgraphs)
     

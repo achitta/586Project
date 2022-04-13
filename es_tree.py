@@ -145,3 +145,6 @@ class EsTree:
         if node_id == self.srcNode:
             return 0
         return self.idToNode[node_id].level
+    
+    def getGraph(self):
+        return self.adjacencyMatrix
