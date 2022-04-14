@@ -38,6 +38,7 @@ class Algorithm:
         for i, (e_src, e_dst,) in enumerate(curr_subgraph):
             if e_src == src and e_dst == dst:
                 deleteIndex = i
+                break
         assert deleteIndex != -1
         curr_subgraph.pop(deleteIndex)
 
