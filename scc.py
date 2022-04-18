@@ -10,6 +10,7 @@ class SCC:
         self.es_reverse = EsTree(vertices, reverse_edges, srcNode)
         self.vertices = vertices
         self.srcNode = srcNode
+        # print("SRC", srcNode)
         
     def deleteEdge(self, src, dst):
         self.es_normal.deleteEdge(src, dst)
@@ -19,6 +20,8 @@ class SCC:
         for n_id in self.vertices:
             reach_normal = self.es_normal.distanceFromSource(n_id)
             reach_reverse = self.es_reverse.distanceFromSource(n_id)
+            # print(f"Normal {self.srcNode} to {n_id}: {reach_normal}")
+            # print(f"Reverse {self.srcNode} to {n_id}: {reach_normal}")
         
             # If a node is no longer reachable then remove it from the scc
             if reach_normal == math.inf or reach_reverse == math.inf:

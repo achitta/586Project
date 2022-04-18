@@ -44,6 +44,7 @@ class EsTree:
         self.computeLevels()
         self.selectParent()
         self.idToNode[srcNode].parent = srcNode
+        # print(self.idToNode)
 
     def deleteEdge(self, src, dst):
         """Remove edge from graph and update data structures accordingly."""
@@ -131,6 +132,7 @@ class EsTree:
 
             for neighbor in self.adjacencyMatrix[currId]:
                 if neighbor not in visited:
+                    # print("Adding", neighbor, currLevel + 1)
                     queue.append((neighbor, currLevel + 1))
                     visited.add(neighbor)
     
@@ -138,8 +140,19 @@ class EsTree:
         """Select a parent for each node from unchecked set."""
         for _, node in self.idToNode.items():
             if node.unchecked:
-                # Move an incoming node as parent
-                node.parent = node.unchecked.pop()
+                # Move an incoming node as parent]
+                for id_val in node.unchecked:
+                    potential = self.idToNode[id_val]
+                    found = False
+                    if potential.level == node.level - 1:
+                        node.parent = id_val
+                        found = True
+                        break
+                
+                if found:
+                    node.unchecked.remove(node.parent)
+                        
+                # node.parent = node.unchecked.pop()
     
     def distanceFromSource(self, node_id):
         if node_id == self.srcNode:
@@ -148,3 +161,7 @@ class EsTree:
     
     def getGraph(self):
         return self.adjacencyMatrix
+
+# e = EsTree([0,1,2], [(0,1),(1,0),(0,2),(2,0),(1,2),(2,1)], 2)
+# e.deleteEdge(2,0)
+# print(e.idToNode)

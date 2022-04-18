@@ -38,7 +38,7 @@ class Algorithm:
         toDelete = curr_scc.deleteEdge(src, dst)
         # print("To Delete", toDelete)
         
-        deleteIndex = -1
+        # deleteIndex = -1
         # assert deleteIndex != -1
         # print(toDelete)
         deleteIndices = []
