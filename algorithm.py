@@ -30,17 +30,10 @@ class Algorithm:
         curr_scc = self.all_sccs[idx]
         curr_subgraph = self.all_subgraphs[idx]
         curr_vertices = curr_scc.vertices.copy()
-        # print("HERE")
-        # print(curr_subgraph)
-        # print(curr_vertices)
         
         # Delete edge from scc and from associated subgraph
         toDelete = curr_scc.deleteEdge(src, dst)
-        # print("To Delete", toDelete)
         
-        # deleteIndex = -1
-        # assert deleteIndex != -1
-        # print(toDelete)
         deleteIndices = []
         for i, (e_src, e_dst,) in enumerate(curr_subgraph):
             if e_src in toDelete or e_dst in toDelete:
@@ -48,25 +41,17 @@ class Algorithm:
         # Clean
         for deleteIndex in deleteIndices:
             curr_subgraph.remove(deleteIndex)
-        # print("AFTER POP", curr_subgraph)
 
         new_all_sccs = []
         new_all_subgraphs = []
         # SCC is broken and we need to recompute
         if len(toDelete) > 0:
-            # print("Curr Subgraph", curr_subgraph)
-            # print("Curr Vertices", curr_vertices)
-            
-            # print("Curr Root", curr_scc.getRoot())
             new_sccs, new_subgraphs = KosarajuGraph(curr_vertices, curr_subgraph).get_scc()
-            # print(new_sccs, new_subgraphs)
             for scc_vertices, scc_subgraph in zip(new_sccs, new_subgraphs):
                 if curr_scc.getRoot() in scc_vertices:
                     new_all_sccs.append(curr_scc)
                 else:
                     new_root = np.random.choice(list(scc_vertices))
-                    # print("NEW ROOT", new_root)
-                    # print()
                     new_all_sccs.append(SCC(scc_vertices, scc_subgraph, new_root))
                     
                 new_all_subgraphs.append(scc_subgraph)
@@ -75,9 +60,6 @@ class Algorithm:
             self.all_subgraphs.pop(idx)
             self.all_sccs.extend(new_all_sccs)
             self.all_subgraphs.extend(new_all_subgraphs)
-            # print("NEW SCCS")
-            # print(self.getSccs())
-            # print()
 
     def findScc(self, src, dst):
         """Find the SCC and subgraph that contains some src and dst node and return index."""
@@ -89,15 +71,3 @@ class Algorithm:
     
     def getSccs(self):
         return [a.getVertices() for a in self.all_sccs], self.all_subgraphs
-
-
-
-# vertices = [0,1,2,3,4,5,6,7]
-# edges = [(0,1),(1,2),(2,3),(2,4),(3,0),(4,5),(5,6),(6,4),(6,7),(1,0)]
-
-# g = KosarajuGraph([0,1,2,3], [(0, 1), (1,0), (2, 3), (3, 0)])
-# print(g.get_scc())
-# a = Algorithm(vertices, edges)
-# print(a.getSccs())
-# a.deleteEdge(1,2)
-# print(a.getSccs())

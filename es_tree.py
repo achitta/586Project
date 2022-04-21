@@ -24,7 +24,6 @@ class Node:
 class EsTree:
     def __init__(self, vertices, edges, srcNode):
         """Initialize ES Tree."""
-        # self.vertices = vertices
         self.adjacencyMatrix = defaultdict(set) # Map from node id to set of neighbor ids
         self.idToNode = {} # Map from node id to node object
         self.srcNode = srcNode # Source node id
@@ -132,7 +131,6 @@ class EsTree:
 
             for neighbor in self.adjacencyMatrix[currId]:
                 if neighbor not in visited:
-                    # print("Adding", neighbor, currLevel + 1)
                     queue.append((neighbor, currLevel + 1))
                     visited.add(neighbor)
     
@@ -151,8 +149,7 @@ class EsTree:
                 
                 if found:
                     node.unchecked.remove(node.parent)
-                        
-                # node.parent = node.unchecked.pop()
+
     
     def distanceFromSource(self, node_id):
         if node_id == self.srcNode:
@@ -161,7 +158,3 @@ class EsTree:
     
     def getGraph(self):
         return self.adjacencyMatrix
-
-# e = EsTree([0,1,2], [(0,1),(1,0),(0,2),(2,0),(1,2),(2,1)], 2)
-# e.deleteEdge(2,0)
-# print(e.idToNode)

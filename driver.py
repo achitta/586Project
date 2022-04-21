@@ -1,18 +1,9 @@
-from turtle import distance
-from es_tree import EsTree
-from kosaraju import KosarajuGraph
-from scc import SCC
 from naive import NaiveAlgorithm
 from algorithm import Algorithm
 import networkx as nx
 import numpy as np
 import random
 import time
-#        0
-#      /  \
-#     1    2
-#    / \     \
-#   3   4  -  5
 
 def completeGraph(numNodes):
     vertices = [i for i in range(numNodes)]
@@ -53,23 +44,11 @@ def getDeleteOrder(edges, numDelete):
     deleteEdges = []
     for idx in deleteIndices:
         deleteEdges.append(edges[idx])
-
-    # visited = set()
-    # for _ in range(numDelete):
-    #     r = len(edges)
-    #     toDelete = random.randint(0, r-1)
-    #     if toDelete in visited:
-    #         continue
-    #     visited.add(toDelete)
-    #     deleteEdges.append(edges[toDelete])
     return deleteEdges
 
-def assertEqual(alg1, alg2):
-    sccs_1, _ = alg1.getSccs()
-    sccs_2, _ = alg2.getSccs()
+def assertEqual(sccs_1, sccs_2):
     if len(sccs_1) != len(sccs_2):
-        # assert False
-        print("ERROR LEN")
+        pass
 
     for scc_1 in sccs_1:
         found = False
@@ -78,185 +57,77 @@ def assertEqual(alg1, alg2):
                 found = True
                 break
         if not found:
-            print("ERROR!")
-            # assert False
+            pass
+
+def runAlgorithm(v, e, toDelete, naive=False):
+    alg = None
+    if naive:
+        alg = NaiveAlgorithm(v.copy(), e.copy())
+    else:
+        alg = Algorithm(v.copy(), e.copy())
+    start_time = time.time()
+    for src, dst in toDelete:
+        alg.deleteEdge(src, dst)
+    end_time = time.time()
+    return end_time - start_time, alg.getSccs()
+
+def compare(v, e, numDelete=None):
+    if not numDelete:
+        numDelete = len(e)
+
+    toDelete = getDeleteOrder(e, numDelete)
+    naiveRuntime, sccs_1 = runAlgorithm(v, e, toDelete, naive=True)
+    optimizedRuntime, sccs_2 = runAlgorithm(v, e, toDelete)
+    assertEqual(sccs_1, sccs_2)
+    print(f"Total Deletions: {numDelete}")
+    print(f"Naive Runtime: {naiveRuntime}")
+    print(f"Optimized Runtime: {optimizedRuntime}")
+    print(f"Speedup: {naiveRuntime / optimizedRuntime}")
+    print("-----------------------------------------")
+    print()
+
 
 def main():
-    # print("Complete Graph w/ 100 nodes + 10 deletions")
-    # print("--------------------------------------------")
-    # v, e = completeGraph(100)
-    # toDelete = getDeleteOrder(e, 10)
-    # start_time = time.time()
-    # naive = NaiveAlgorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     naive.deleteEdge(src, dst)
-    # naive.getSccs()
-    # end_time = time.time()
-    # print(f"Naive Algorithm runtime: {end_time - start_time}")
+    print("Complete Graphs")
+    print("=======================================")
+    for numNodes in range(20, 110, 20):
+        print(f"Complete Graph w/ {numNodes} nodes")
+        print("-----------------------------")
+        v, e = completeGraph(numNodes)
+        compare(v, e)
 
-    # start_time = time.time()
-    # alg = Algorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     alg.deleteEdge(src, dst)
-    # alg.getSccs()
-    # end_time = time.time()
-    # print(f"Algorithm runtime: {end_time - start_time}")
-    # assertEqual(naive, alg)
-    # print()
-    # print("=============================================")
+    print("Random Graph: Variable Num Nodes + Probability = 0.5")
+    print("=======================================")
+    for numNodes in range(20, 110, 20):
+        print(f"Random Graph w/ {numNodes} nodes")
+        print("-----------------------------")
+        v, e = randomGraph(numNodes, 0.5)
+        compare(v, e)
 
-    # print("Complete Graph w/ 100 nodes + 200 deletions")
-    # print("--------------------------------------------")
-    # v, e = completeGraph(100)
-    # toDelete = getDeleteOrder(e, 200)
-    # start_time = time.time()
-    # naive = NaiveAlgorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     naive.deleteEdge(src, dst)
-    # naive.getSccs()
-    # end_time = time.time()
-    # print(f"Naive Algorithm runtime: {end_time - start_time}")
+    print("Random Graph: Variable Probability + Num Nodes = 50")
+    print("=======================================")
+    for prob in range(0, 110, 20):
+        prob = prob / 100
+        print(f"Random Graph w/ {prob} probability")
+        print("-----------------------------")
+        v, e = randomGraph(50, prob)
+        compare(v, e)
+    
+    print("Erdos-Renyi: Variable Num Nodes + Probability = 0.5")
+    print("=======================================")
+    for numNodes in range(20, 110, 20):
+        print(f"Erdos-Renyi w/ {numNodes} nodes")
+        print("-----------------------------")
+        v, e = erdos_renyi(numNodes, 0.5)
+        compare(v, e)
 
-    # start_time = time.time()
-    # alg = Algorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     alg.deleteEdge(src, dst)
-    # alg.getSccs()
-    # end_time = time.time()
-    # print(f"Algorithm runtime: {end_time - start_time}")
-    # assertEqual(naive, alg)
-    # print()
-    # print("=============================================")
-
-    # print("Erdos-Renyi w/ 100 nodes + 200 deletions")
-    # print("--------------------------------------------")
-    # v, e = erdos_renyi(100, 0.3)
-    # toDelete = getDeleteOrder(e, 200)
-    # start_time = time.time()
-    # naive = NaiveAlgorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     naive.deleteEdge(src, dst)
-    # naive.getSccs()
-    # end_time = time.time()
-    # print(f"Naive Algorithm runtime: {end_time - start_time}")
-
-    # start_time = time.time()
-    # alg = Algorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     alg.deleteEdge(src, dst)
-    # alg.getSccs()
-    # end_time = time.time()
-    # print(f"Algorithm runtime: {end_time - start_time}")
-    # assertEqual(naive, alg)
-    # print()
-    # print("=============================================")
-
-    # print("Erdos Renyi w/ 100 nodes + 1000 deletions")
-    # print("--------------------------------------------")
-    # v, e = erdos_renyi(100, 0.3)
-    # toDelete = getDeleteOrder(e, 1000)
-    # start_time = time.time()
-    # naive = NaiveAlgorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     naive.deleteEdge(src, dst)
-    # naive.getSccs()
-    # end_time = time.time()
-    # print(f"Naive Algorithm runtime: {end_time - start_time}")
-
-    # start_time = time.time()
-    # alg = Algorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     alg.deleteEdge(src, dst)
-    # alg.getSccs()
-    # end_time = time.time()
-    # print(f"Algorithm runtime: {end_time - start_time}")
-    # assertEqual(naive, alg)
-    # print()
-    # print("=============================================")
-
-    # print("Watts-Strogatz w/ 200 nodes + 1000 deletions")
-    # print("--------------------------------------------")
-    # v, e = watts_strogatz(200, 50, 0.5)
-    # toDelete = getDeleteOrder(e, 1000)
-    # start_time = time.time()
-    # naive = NaiveAlgorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     naive.deleteEdge(src, dst)
-    # naive.getSccs()
-    # end_time = time.time()
-    # print(f"Naive Algorithm runtime: {end_time - start_time}")
-
-    # start_time = time.time()
-    # alg = Algorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     alg.deleteEdge(src, dst)
-    # alg.getSccs()
-    # end_time = time.time()
-    # print(f"Algorithm runtime: {end_time - start_time}")
-    # assertEqual(naive, alg)
-    # print()
-    # print("=============================================")
-
-    # print("Complete Graph w/ 20 nodes + 1000 deletions")
-    # print("--------------------------------------------")
-    # v, e = completeGraph(50)
-    # toDelete = getDeleteOrder(e.copy(), len(e))
-    # # toDelete = [(2, 0), (0, 2), (1, 0), (0, 1), (2, 1), (1, 2)]
-    # # print(toDelete)
-    # start_time = time.time()
-    # naive = NaiveAlgorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     # print(f"Deleting {src} to {dst}")
-    #     naive.deleteEdge(src, dst)
-    #     # print("OUTPUT", naive.getSccs()[0])
-    # end_time = time.time()
-    # print(f"Naive Algorithm runtime: {end_time - start_time}")
-
-    # start_time = time.time()
-    # alg = Algorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     # print(f"Deleting edge from {src} to {dst}")
-    #     alg.deleteEdge(src, dst)
-    #     # print("OUTPUT", alg.getSccs()[0])
-    # end_time = time.time()
-    # print(f"Algorithm runtime: {end_time - start_time}")
-    # assertEqual(naive, alg)
-    # print()
-    # print("=============================================")
-
-    print("Validation")
-    print("--------------------------------------------")
-    v, e = completeGraph(5)
-    toDelete = getDeleteOrder(e.copy(), len(e))
-    # toDelete = [(2, 0), (1,2)]
-    # print(toDelete)
-    start_time = time.time()
-    naive = NaiveAlgorithm(v.copy(), e.copy())
-    alg = Algorithm(v.copy(), e.copy())
-    for src, dst in toDelete:
-        # print(f"Deleting {src} to {dst}")
-        naive.deleteEdge(src, dst)
-        # print(naive.getSccs()[0])
-        alg.deleteEdge(src, dst)
-        # print(alg.getSccs()[0])
-        # print()
-        assertEqual(naive, alg)
-        # print("OUTPUT", naive.getSccs()[0])
-    end_time = time.time()
-    print(f"Naive Algorithm runtime: {end_time - start_time}")
-
-    # start_time = time.time()
-    # alg = Algorithm(v.copy(), e.copy())
-    # for src, dst in toDelete:
-    #     # print(f"Deleting edge from {src} to {dst}")
-    #     alg.deleteEdge(src, dst)
-    #     # print("OUTPUT", alg.getSccs()[0])
-    # end_time = time.time()
-    # print(f"Algorithm runtime: {end_time - start_time}")
-    # assertEqual(naive, alg)
-    # print()
-    print("=============================================")
-
+    print("Watts-Strogatz: Variable Num Nodes + Probability = 0.3 + K = 5")
+    print("=======================================")
+    for numNodes in range(20, 110, 20):
+        print(f"Watts-Strogatz w/ {numNodes} nodes")
+        print("-----------------------------")
+        v, e = watts_strogatz(numNodes, 5, 0.3)
+        compare(v, e)
     
 
     

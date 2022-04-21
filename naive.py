@@ -23,10 +23,3 @@ class NaiveAlgorithm:
     
     def getSccs(self):
         return self.all_sccs, self.all_subgraphs
-
-# vertices = [0,1,2,3,4,5,6,7]
-# edges = [(0,1),(1,2),(2,3),(2,4),(3,0),(4,5),(5,6),(6,4),(6,7),(1,0)]
-
-# a = NaiveAlgorithm(vertices, edges)
-# print(a.getSccs())
-# a.deleteEdge(0,1)
